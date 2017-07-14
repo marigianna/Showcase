@@ -2,8 +2,10 @@ package org.educama.shipment.api;
 
 import java.util.List;
 
+import org.educama.shipment.api.datastructure.ShipmentHistoricTaskInstanceDS;
 import org.educama.shipment.api.datastructure.ShipmentPlanItemDS;
 import org.educama.shipment.api.datastructure.ShipmentTaskDS;
+import org.educama.shipment.api.resource.ShipmentHistoricTaskInstanceListResource;
 import org.educama.shipment.api.resource.ShipmentPlanItemListResource;
 import org.educama.shipment.api.resource.ShipmentTaskListResource;
 import org.educama.shipment.boundary.ShipmentTaskBoundaryService;
@@ -22,6 +24,7 @@ public class ShipmentTaskController {
 
     public static final String SHIPMENT_ACTIVE_TASK_RESOURCE_PATH = "/educama/v1/tasks";
     public static final String SHIPMENT_ENABLED_TASK_RESOURCE_PATH = "/educama/v1/tasks/enabled";
+    public static final String SHIPMENT_COMPLETED_TASK_RESOURCE_PATH = "/educama/v1/tasks/completed";
 
 
     @Autowired
@@ -47,4 +50,14 @@ public class ShipmentTaskController {
        ShipmentPlanItemListResource enabledPlanItemsList = new ShipmentPlanItemListResource().fromPlanItemCollection(enabledPlanItems);
        return enabledPlanItemsList;
    }
+   /**
+   * @param bases on the -by construction- precondition that the trackingId equals to the business key of the caseInstance
+   * @return a list of enabled activities for a particular shipment id
+   */
+  @RequestMapping(method = RequestMethod.GET, path = ShipmentTaskController.SHIPMENT_COMPLETED_TASK_RESOURCE_PATH, produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ShipmentHistoricTaskInstanceListResource getCompletedTasks(@RequestParam("trackingId") String trackingId) {
+      List<ShipmentHistoricTaskInstanceDS> completedTaskItems = shipmentTaskBoundaryService.findAllCompleted(trackingId);
+      ShipmentHistoricTaskInstanceListResource completedTaskItemsList = new ShipmentHistoricTaskInstanceListResource().fromTaskCollection(completedTaskItems);
+      return completedTaskItemsList;
+  }
 }

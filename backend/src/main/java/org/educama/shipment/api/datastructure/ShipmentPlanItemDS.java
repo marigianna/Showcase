@@ -1,7 +1,6 @@
 package org.educama.shipment.api.datastructure;
 
 /**
- * @author msk
  * Re-usable data structure used by resources.
  */
 public class ShipmentPlanItemDS {
